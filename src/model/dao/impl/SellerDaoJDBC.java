@@ -57,16 +57,8 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setInt(1,  id);
 			rs = st.executeQuery(); //Consultar no BD
 			if (rs.next()) {
-				Department dep = new Department(); //Instanciar o departamento
-				dep.setId(rs.getInt("DepartmentId")); //Pega o iD do departamento
-				dep.setName(rs.getString("DepName")); //Pega o nome do departamento
-				Seller obj = new Seller(); //Instaciando o vendedor
-				obj.setId(rs.getInt("Id"));
-				obj.setName(rs.getString("Name"));
-				obj.setEmail(rs.getString("Email"));
-				obj.setBaseSalary(rs.getDouble("BaseSalary"));
-				obj.setBirthDate(rs.getDate("BirthDate"));
-				obj.setDepartment(dep); //É o objeto criado acima 
+				Department dep = instantiateDepartment(rs); //Instancia o departamento e chama função "instantiateDepartment"
+				Seller obj = instantiateSeller(rs, dep); //Intancia o vendedor e chama função "instantiateSeller"
 				return obj;
 			}
 			return null;
@@ -79,6 +71,26 @@ public class SellerDaoJDBC implements SellerDao {
 				DB.closeResultSet(rs);
 			}
 		}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller obj = new Seller(); //Instaciando o vendedor
+		obj.setId(rs.getInt("Id"));
+		obj.setName(rs.getString("Name"));
+		obj.setEmail(rs.getString("Email"));
+		obj.setBaseSalary(rs.getDouble("BaseSalary"));
+		obj.setBirthDate(rs.getDate("BirthDate"));
+		obj.setDepartment(dep); //É o objeto criado acima
+		return obj;
+	}
+
+	//Criando funções para serem reaproveitadas
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department(); //Instanciar o departamento
+		dep.setId(rs.getInt("DepartmentId")); //Pega o iD do departamento
+		dep.setName(rs.getString("DepName")); //Pega o nome do departamento
+		return dep;
+				
+	}
 
 	@Override
 	public List<Seller> findAll() {
