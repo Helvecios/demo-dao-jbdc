@@ -26,6 +26,15 @@ public class Program {
 		for (Seller obj : list) {
 			System.out.println(obj);
 		}
+		
+		System.out.println();
+		System.out.println("==== Teste 3: Seller findAll ====");
+		list = sellerDao.findAll();
+		//For_each Para cada Seller obj na minha list, imprimir na tela o obj
+		for (Seller obj : list) {
+			System.out.println(obj);
+		}
+		
 	}
 
 }

@@ -97,8 +97,42 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = conn.prepareStatement("SELECT seller.*,department.Name as DepName "
+					+"FROM seller INNER JOIN department "
+					+"ON seller.DepartmentId = department.Id "
+					+"ORDER BY Name");
+			
+			rs = st.executeQuery(); //Consultar no BD
+			
+			List<Seller> list = new ArrayList<>();//Cria uma lista para colocar todos os vendedores do departamento escolhido
+			Map<Integer, Department> map = new HashMap<>();//Para que o departamento seja único criar o map
+			
+			while (rs.next()) {
+				
+				//Testa se o departamento ja existe
+				Department dep = map.get(rs.getInt("DepartmentID")); //Instancia o departamento e chama função "instantiateDepartment"
+				if(dep == null) { //Se o departamento não existir instancia um novo departamento
+					dep = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentID"), dep);//Guardar o Id do departamento, no map
+				}
+								
+				Seller obj = instantiateSeller(rs, dep); //Intancia o vendedor e chama função "instantiateSeller"
+				list.add(obj); //Inclui na lista todos os vendedores do departamento escolhido
+			}
+			return list;
+		}
+			catch (SQLException e) {
+				throw new DbException(e.getMessage());
+			}
+			finally { //Para fechar o Statment e o ResultSet
+				DB.closeStatement(st);
+				DB.closeResultSet(rs);
+			}
+		
 	}
 	//Operação para listar todos vendedores de um determinado departamento
 	@Override
