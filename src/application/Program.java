@@ -39,11 +39,19 @@ public class Program {
 		System.out.println();
 		System.out.println("==== Teste 4: Seller insert ====");
 		//Instanciando um novo vendedor
-		Seller newSeller = new Seller(null, "greg", "greg@gmail.com", new Date(), 4000.0, department);
+		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department);
 		//Inserir o novo vendedor no BD
 		sellerDao.insert(newSeller);
-		System.out.println("Inserido! novo vendedor id = " + newSeller.getId());
+		System.out.println("Inserted! new seller id = " + newSeller.getId());
+		
+		System.out.println();
+		System.out.println("==== Teste 5: Seller update ====");
+		seller = sellerDao.findById(1); 
+		seller.setName("Martha Waine"); //Nome a ser atualizado
+		sellerDao.update(seller); //Atualiza o nome do vendedor
+		System.out.println("Update completed!");
 		
 	}
 
+	
 }
